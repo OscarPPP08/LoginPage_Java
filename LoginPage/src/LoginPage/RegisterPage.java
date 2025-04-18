@@ -8,10 +8,11 @@ import java.util.HashMap;
 
 public class RegisterPage implements ActionListener {
     HashMap<String, String> loginInfo = new HashMap<String, String>();
-    IdAndPass idAndPassword = new IdAndPass();
+    IdAndPass idAndPassword;
+    LoginPage loginPage;
 
     JFrame frame = new JFrame();
-    JButton RegisterButton = new JButton("Login");
+    JButton RegisterButton = new JButton("Create");
     JButton resetButton = new JButton("Reset");
     JButton loginButton = new JButton("Already have account");
     JTextField userIdField = new JTextField();
@@ -20,8 +21,11 @@ public class RegisterPage implements ActionListener {
     JLabel userPasswordLabel = new JLabel("User Password:");
     JLabel messageLabel = new JLabel();
 
-    RegisterPage(HashMap<String, String> loginInfoOriginal) {
-        loginInfo = loginInfoOriginal;
+    RegisterPage(IdAndPass sharedIdAndPass) {
+        this.idAndPassword = sharedIdAndPass;
+        this.loginPage = new LoginPage(sharedIdAndPass);
+
+        loginInfo = sharedIdAndPass.getLoginInfo();
 
         userIdLabel.setBounds(50, 100, 75, 25);
         userIdField.setBounds(150, 100, 120, 25);
@@ -56,13 +60,6 @@ public class RegisterPage implements ActionListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 500);
         frame.setLayout(null);
-        frame.setVisible(false);
-
-    }
-
-    public void LoginPage(boolean loginPageVisibility) {
-
-        frame.setVisible(loginPageVisibility);
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -74,14 +71,25 @@ public class RegisterPage implements ActionListener {
             userPasswordField.setText("");
         }
         if (e.getSource() == RegisterButton) {
-            idAndPassword.createUser(userID, userPassword);
-            System.out.println("All Logins: " + idAndPassword.getLoginInfo());
-            System.out.println(userID + " has created his account");
-            messageLabel.setText("Login Successful, Welcome " + userID);
+            if (!userID.matches("^[a-zA-Z0-9]+$") || userID.contains(" ")) {
+                JOptionPane.showMessageDialog(frame, "Please enter user ID correctly.");
+            } else if (!userPassword.matches("^[a-zA-Z0-9]+$") || userPassword.contains(" ")) {
+                JOptionPane.showMessageDialog(frame, "Please enter user Password correctly.");
+            } else {
+                if (loginInfo.containsKey(userID)) {
+                    JOptionPane.showMessageDialog(frame, "User already exists.");
+                } else {
+                    idAndPassword.createUser(userID, userPassword);
+                    System.out.println("All Logins: " + idAndPassword.getLoginInfo());
+                    System.out.println(userID + " has created his account");
+                    messageLabel.setText("Login Successful, Welcome " + userID);
+                }
+            }
         }
         if (e.getSource() == loginButton) {
+            loginPage.setVisible(true);
             frame.setVisible(false);
-            LoginPage(true);
         }
     }
+
 }

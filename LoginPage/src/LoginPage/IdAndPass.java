@@ -3,11 +3,10 @@ package LoginPage;
 import java.util.HashMap;
 
 public class IdAndPass {
-    HashMap<String,String> loginInfo = new HashMap<String,String>();
+    HashMap<String, String> loginInfo = new HashMap<String, String>();
 
     IdAndPass() {
-        loginInfo.put("username","admin123");
-        loginInfo.put("marek","jajko2137");
+        loginInfo.put("admin", "123");
     }
 
     public void createUser(String username, String password) {
